@@ -29,6 +29,8 @@ def render_main():
 def render_departure(departure):
     header = dict(title=data.title,
                   departures=data.departures)
+    if departure not in data.departures:
+        return render_template('404.html', header=header), 404
     departures = dict(place_departure=data.departures[departure])
     prices, nights = list(), list()
     tours = dict()
@@ -41,7 +43,6 @@ def render_departure(departure):
                         pic=tour['picture'])
             tours[tour_id] = tour
     departures['tours'] = tours
-    print(departures)
     return render_template('departure.html', header=header, departures=departures, prices=prices, nights=nights)
 
 
@@ -49,10 +50,19 @@ def render_departure(departure):
 def render_tour(tour_id):
     header = dict(title=data.title,
                   departures=data.departures)
+    if 0 >= tour_id or tour_id > len(data.tours):
+        return render_template('404.html', header=header), 404
     tour = dict()
     for key, value in data.tours[tour_id].items():
         tour[key] = value
     return render_template('tour.html', header=header, tour=tour)
+
+
+@app.errorhandler(404)
+def page_not_found(error):
+    header = dict(title=data.title,
+                  departures=data.departures)
+    return render_template('404.html', header=header)
 
 
 if __name__ == "__main__":
