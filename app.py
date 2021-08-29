@@ -29,7 +29,20 @@ def render_main():
 def render_departure(departure):
     header = dict(title=data.title,
                   departures=data.departures)
-    return render_template('departure.html', header=header)
+    departures = dict(place_departure=data.departures[departure])
+    prices, nights = list(), list()
+    tours = dict()
+    for tour_id, tour in data.tours.items():
+        if departure == tour['departure']:
+            prices.append(tour['price'])
+            nights.append(tour['nights'])
+            tour = dict(desc=tour['description'],
+                        title=tour['title'],
+                        pic=tour['picture'])
+            tours[tour_id] = tour
+    departures['tours'] = tours
+    print(departures)
+    return render_template('departure.html', header=header, departures=departures, prices=prices, nights=nights)
 
 
 @app.route('/tours/<int:tour_id>/')
