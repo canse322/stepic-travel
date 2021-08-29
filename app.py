@@ -49,7 +49,10 @@ def render_departure(departure):
 def render_tour(tour_id):
     header = dict(title=data.title,
                   departures=data.departures)
-    return render_template('tour.html', header=header)
+    tour = dict()
+    for key, value in data.tours[tour_id].items():
+        tour[key] = value
+    return render_template('tour.html', header=header, tour=tour)
 
 
 if __name__ == "__main__":
